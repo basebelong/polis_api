@@ -2,14 +2,26 @@
 
 import requests
 import json
+import os
+import sys
 import mysql.connector
 from datetime import datetime
 
+try:
+    db_server = os.environ['PA_DBSERVER']
+    db_user = os.environ['PA_USER']
+    db_password = os.environ['PA_PASSWORD']
+    db_database = os.environ['PA_DATABASE']
+except:
+    print(f"Error: Environment variables not set. Please make sure ", end="")
+    print(f"PA_DBSERVER, PA_USER, PA_PASSWORD, PA_DATABASE are set.")
+    sys.exit(2)
+
 db = mysql.connector.connect(
-    host="ubuntu-server",
-    user="polis",
-    password="123password",
-    database="polis_handelser"
+    host=db_server,
+    user=db_user,
+    password=db_password,
+    database=db_database
 )
 
 if db:
@@ -26,7 +38,7 @@ if r:
 else:
     print("Error downloading data.")
 
-print(f"Insering data to database: ", end = "")
+print(f"Insering data to database ...", end="")
 for i in range(500):
     id = data[i]['id']
     type = data[i]['type']
@@ -48,7 +60,8 @@ for i in range(500):
     cursor.execute(sql, val)
     db.commit()
     
-    print(f".", end = "")
+    if i % 10 == 0:
+        print(f".", end = "")
 
 cursor.close()
 db.close()
