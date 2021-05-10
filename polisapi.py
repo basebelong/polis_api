@@ -38,7 +38,7 @@ if r:
 else:
     print("Error downloading data.")
 
-print(f"Insering data to database ...", end="")
+print(f"Inserting data to database ...", end="")
 for i in range(500):
     id = data[i]['id']
     type = data[i]['type']
